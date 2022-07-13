@@ -1,0 +1,738 @@
+---
+title: "¿Qué explica el nivel de desempleo?"
+author: "Angela Luyo Ramirez"
+output:
+  html_document:
+    df_print: paged
+  rmdformats::readthedown:
+    code_folding: show
+  lightbox: yes
+  toc: yes
+  toc_depth: 5
+  toc_float:
+    collapsed: no
+    smooth_scrool: yes
+  thumbnails: yes
+  self_contained: yes
+  pdf_document: default
+---
+
+### Introducción
+
+
+La pandemia por COVID-19 ha tenido impactos no solo económicos, sino tambien sociales, económicos y culturales alrededor del mundo. Desde los primeros casos en el 2019 hasta la fecha, todavía se viven los efectos estructurales de esta crisis, condicionando el nivel de desarrollo y dismimuyendo las posibilidades de subsistencia de la población.Esta situación es comprobada por la Organización Internacional del Trabajo, ya que en uno de sus informes senaló que se perdió el 8,8% de las horas de trabajo a nivel mundial en el 2020 con respecto al año anterior, siendo equivalentes a 255 millones de empleos a tiempo completo.Por estas razones, el presente análisis tomará en cuenta 3 variables independientes que pretenden explicar la dependencia del desempleo a nivel mundial.
+ 
+Por un lado, se considera la ubicación geográfica de la población en área rural en tanto su situación se ve condicionada por el limitado acceso a recursos básicos como agua, luz, desague, e incluso a oportunidades como educación. Estas consideraciones son indispensables si se busca hablar de desempleo. Por otro lado, dado que la pandemia y el posterior confinamiento limitaron las oportunidades de empleo, las actividades se trasladaron al mundo virtual, resaltando el uso de dispositivos electrónicos en el día a día. Entonces, el acceso a electricidad se volvió vital no solo para continuar trabajando, sino para encontrar trabajo. Por último, se considera el nivel de pobreza como un factor relacionado a los niveles de desempleo, ya que el limitado desarrollo económico durante la pandemia ha tenido gran impacto en los índices de desempleo, comprometiendo la calidad de vida, la satisfacción de las necesidades básicas, y contribuyendo a la vez al aumento de la informalidad laboral.
+
+Es por ello que este trabajo cuenta con relevancia académica, temporal y social al buscar explicar el nivel de desempleo alrededor del mundo durante el año 2020 en base a factores como la cantidad de personas que viven en el sector rural, el acceso a electricidad y el nivel de pobreza.
+
+
+### Primera parte:Diagnósticos de regresión
+
+Luego de establecer 6 modelos entre la variable dependiente "Desempleo" y 3 independientes,  se procedió a analizar solo dos modelos significativos: El modelo 1 y el modelo 5.
+En primer lugar, tras una prueba de hipótesis se puede evidenciar que en el Modelo 1, la variable "poblacion rural" tiene un efecto significativo al 0.01 (indicado por el asterisco); segundo, que ese efecto es inverso, pues el coeficiente calculado es negativo; y tercero que la magnitud de ese efecto es -0.034, lo que indica cuanto varía Desempleo en promedio cuando Población Rural se incremente en dos unidad.
+Por otro lado, la prueba en el modelo 5 revela que, si bien Población rural tiene efecto significativo al 0.1 (indicado por el asterisco)y es un efecto inverso en 0.018, la variable de control Electricidad no genera un efecto significativo. 
+
+Entonces, se puede decir que los niveles de desempleo en los países del mundo responden a la cantidad de población habitante de zonas rurales, lo cual condicionaría su situación socioeconómica (alfabetización, educación, acceso a recursos básicos, etc.)
+
+Ahora bien, con el fin de comprobar la elección del Modelo 1, se realizó una prueba ANOVA entre el modelo de regresión 1 y 5, obteniendo lo siguientes:
+
+-   H0: El modelo de regresión no es válido
+
+-   H1: El modelo de regresión es válido (variable X aporta al modelo)
+
+
+La comparación de modelos 1 y 5, usando la tabla de análisis de varianza (anova), propone como hipótesis nula que los modelos no difieren (no se ha reducido el error al pasar de un modelo a otro). Como la comparación no es significativa (vea el Pr(>F)), aceptamos la igualdad de modelos.
+Entonces, como el p \> 0.05 entonces aceptamos la H0, por lo que concluimos que el modelo 5 no es válido como modelo de predición, es decir, existe no una relación lineal entre desempleo, población rural y electricidad.
+
+En segundo lugar, en cuanto a los diagnósticos de regresión, se aplicaron al Modelo 1 obteniendo los siguientes resultados: 
+
+a) Linealidad: El gráfico obtenido muestra que la línea tiende a ser horizontal, por lo que existe linealidad.
+
+b) Homocedasticidad:Dado que la línea roja tienda a ser horizontal, se conluye que el error del modelo de regresión no afecta la varianza o dispersión de la estimación. La probabilidad de homocedasticidad es alta (p-value mayor a 0.05), de ahi que se acepta que el modelo muestre homocedasticidad.
+
+c) Normalidad de residuos:Los puntos, al tener una tendencia a alinearse a la diagonal, demuestra la existencia de normalidad de residuos. Con un p-valor menor a 0.05 en el Shapiro-Wilk test, se comprueba lo planteado.
+
+d) No multicolinealidad: Dado que el modelo 1 solo incluye la relación entre Desempleo y Poblacion Rural, este análisis, por el numero de variables, no aplica.
+
+e) Valores influyentes: Al prestar atencion al indice de Cook y a los valores predecidos (los hat values), se determina que no hay casos particulares que tienen la capacidad de trastocar lo que el modelo representa. 
+
+
+### Segunda parte: Análisis de conglomerados y variables latentes
+
+Tomando como base de datos el merge entre Data sobre Nivel de Desempleo y Tasa de mortalidad en bebés, se determinó que la mejor distrubución de los datos es aplicando estandarización, por lo que el siguiente análisis tomará a los datos normalizados.
+
+En primer lugar, tras un análisis de correlación preliminar, resultó necesario hacer cambios de monotonía, ya que Desempleo tenía una correlación negativa con Poblacion Rural, mortality_rate e incidence_tuberculosis. 
+
+Entonces, en segundo lugar, luego de preparar la data para tenerla como numérica, se procedió a evaluar las gráficas usando el estadístico gap para obtener el número ideal de cluster. Como resultado se determinó que 3 clusters seria lo ideal para conglomerar el conjunto de datos. Es así como se pudo llegar a la conclusión de que estos datos fueron mejor clusterizados usando el metodo aglomerativo divisivo (DIANA), ya que su gráfico de siluetas no presenta área negativa y tiene un coeficiente de 0.32, siendo mayor al 0.23 de Agnes y Diana. 
+
+En tercer lugar, se pudo obtener que existe un valor mal clusterizado, el cual sería Paraguay.Además, en cuanto a la distribución, gracias a la gráfica en dos dimensiones se puede ver que los grupos no estan bien distribuidos porque los valores por colores estan dispersos unos de otros. 
+
+Otro resultado que debe resaltarse es que al hacer la comparación de modelos jeráquicos aglomeración y división, la coincidencia entre los valores de la diagonal muestran que no era necesaria una recodificación. 
+
+
+En suma, se concluye también que al usar un metodo jerárquico como Diana, se opta por una técnica de clusterilización dura, en tanto todo elemento termina siendo parte de un cluster.
+
+
+En cuarto lugar, en cuanto al análisis factorial exploratorio, al ver pocos bloquees sombreados en rojo, no hay mucha esperanza de obtener un buen análisis factorial. Aun así, la gráfica sobre factores o variables latentes acertó en la determinación de 2 familias en la data obtenida tras el merge. 
+
+Sin embargo, la matriz de correlaciones terminó no siendo adecuada para el análisis, ya que, pese a no ser una matriz singular, sí es una matriz identidad. El serlo condiciona fuertemente los resultados posteriores, ya que no solo no se puede redimensionar la data a un menor numero de factores, sino que no se puede hacer un analisis factorial para ver qué tanto aporta cada variable a los factores. En consecuencia, no se puede realizar un analisis confirmatorio efectivo, ya que no se puede ir más allá de la creación del model al no contar con la información previamente obtenida en el EFA. 
+
+En base a lo expuesto, se pueden presentar algunas razones por las que los resultados del análisis  exploratorio no fueron los esperados: 
+
+a) las bases de datos contaban con muchos valores perdidos, por lo que al limpiar la data nos quedamos con pocos datos que procesar. 
+
+b) las variables independientes no explican los niveles de desempleo en los países del mundo en el año elegido 2020, por lo que se debieron elegir otras variables en lugar de población rural, acceso a electricidad y niveles de pobreza. 
+
+c) la base de donde con la que se hizo el merge,Tasa de mortalidad en bebés, no se relacionó efectivamente con la base de datos inicial, condicionando el análisis y el nivel de correlación entre las variables. 
+
+
+### Anexos 
+
+##  Diagnósticos de Regresión
+
+  
+```{r}
+#install.packages('Rtools')
+library(ggrepel)
+library(dbscan)
+library(rio)
+library(Rmisc)
+library (stargazer)
+library(moments)
+library(DescTools)
+library(BBmisc)
+library(cluster)
+library(factoextra)
+library(ggplot2)
+library(polycor)
+```
+ 
+--> Importación de Data
+
+```{r}
+#Data: Desempleo en los países del mundo 
+data="https://github.com/lachicadepurpura/TRABAJO-ESTAD-STICA/blob/main/DESEMPLEO.xls"
+library(rio) #Convocamos el paquete   
+data=import("DESEMPLEO.xls") 
+```
+
+```{r}
+library(Rmisc)
+```
+
+```{r}
+modelo1 = lm(data$Desempleo ~ data$`Poblacion rural`)
+summary(modelo1)
+```
+
+```{r}
+modelo2 = lm(data$Desempleo ~ data$Electricidad + data$`Poblacion rural`+data$Pobreza)
+summary(modelo2)
+```
+```{r}
+modelo3 = lm(data$Desempleo  ~ data$Pobreza )
+summary(modelo3)
+```
+```{r}
+modelo4 = lm(data$Desempleo ~ data$Electricidad)
+summary(modelo4)
+```
+```{r}
+modelo5 = lm(data$Desempleo  ~ data$`Poblacion rural` + data$Electricidad) #Modelo sin variable PObreza, que tiene pocos valores
+summary(modelo5)
+```
+```{r}
+modelo6 = lm(data$Desempleo  ~ data$`Pobreza` + data$`Poblacion rural`)
+summary(modelo6)
+```
+# Análisis del Modelo 1 
+
+```{r}
+library(stargazer)
+reg1=lm(modelo1,data)
+stargazer(reg1,type = "text",intercept.bottom = FALSE)
+```
+
+#modelo 2
+```{r}
+library(stargazer)
+reg2=lm(modelo2,data)
+stargazer(reg2,type = "text",intercept.bottom = FALSE)
+```
+
+#Modelo 4
+
+```{r}
+reg4=lm(modelo4,data)
+stargazer(reg4,type = "text",intercept.bottom = FALSE)
+```
+
+Al probar esta hipótesis vemos, primero que pctopo no tiene efecto significativo al 0.01 (indicado por el asterisco); segundo, que ese efecto es inverso, pues el coeficiente calculado es positivo; y tercero que la magnitud de ese efecto es 0.015.
+
+
+
+```{r}
+library(stargazer)
+reg5=lm(modelo5,data)
+stargazer(reg5,type = "text",intercept.bottom = FALSE)
+```
+
+# Modelo 5
+
+```{r}
+library(stargazer)
+reg5=lm(modelo5,data)
+stargazer(reg5,type = "text",intercept.bottom = FALSE)
+```
+
+
+```{r}
+#Prueba ANOVA
+tanova=anova(reg1,reg5)
+stargazer(tanova,type = 'text',summary = F,title = "Table de Análisis de Varianza")
+```
+
+
+#Linealidad
+
+```{r}
+plot(reg1, 1)
+
+```
+
+```{r}
+plot(reg5, 1)
+
+```
+
+# Homocedasticidad
+La homocedasticidad es una característica de un modelo de regresión lineal que implica que la varianza de los errores es constante a lo largo del tiempo.
+```{r}
+plot(reg1, 3)
+```
+
+```{r}
+library(lmtest)
+bptest(reg1)
+```
+
+# Normalidad de los residuos
+
+```{r}
+plot(reg1, 2)
+```
+
+```{r}
+shapiro.test(reg1$residuals)
+```
+
+# NO Multicolinealidad
+
+```{r}
+library(DescTools)
+VIF(reg5)  # > 5 es problematico
+```
+
+#valores influyentes
+
+```{r}
+plot(reg1, 5)
+```
+```{r}
+#Recuperando valores influyentes
+checkReg1=as.data.frame(influence.measures(reg1)$is.inf)
+head(checkReg1)
+```
+
+```{r}
+checkReg1[checkReg1$cook.d & checkReg1$hat,]
+
+```
+
+COnclusiones: Normalmente le prestamos atencion al indice de Cook y a los valores predecidos (los hat values) --> todo FALSO
+
+
+## Anexos sobre Procesos de Clusterización
+
+```{r}
+#Data 
+data2="https://github.com/lachicadepurpura/TRABAJO-ESTAD-STICA/blob/main/data_marco.xlsx"
+library(rio) #Convocamos el paquete   
+data2=import("data_marco.xlsx")
+```
+
+
+```{r}
+Datamerge=merge(data,data2,"country")
+```
+
+```{r}
+Datemerge = Datamerge[complete.cases(Datamerge$Desempleo),]
+Datamerge = Datamerge[complete.cases(Datamerge$Electricidad),]
+Datamerge = Datamerge[complete.cases(Datamerge$`Poblacion rural`),]
+Datamerge = Datamerge[complete.cases(Datamerge$Pobreza),]
+Datamerge = Datamerge[complete.cases(Datamerge$handwashing),]
+Datamerge = Datamerge[complete.cases(Datamerge$incidence_tuberculosis),]
+Datamerge = Datamerge[complete.cases(Datamerge$mortality_rate),]
+```
+
+
+```{r}
+names(Datamerge)
+```
+
+#Estrategia Particion
+
+```{r}
+str(Datamerge)
+```
+
+```{r}
+#Verificar distribución
+boxplot(Datamerge[,-1])
+```
+
+```{r}
+#install.packages('BBmisc')
+library(BBmisc)
+```
+
+```{r}
+#install.packages('normalize')
+boxplot(normalize(Datamerge[,-1],method='range',range=c(0,1)))
+```
+
+```{r}
+boxplot(normalize(Datamerge[,-1],method='standardize'))
+
+```
+
+--> Nos quedamos con los datos estandarizados 
+
+```{r}
+Datamerge[,-1]=normalize(Datamerge[,-1],method='standardize')
+Datamerge=Datamerge[complete.cases(Datamerge),]
+
+#descriptivos:
+summary(Datamerge)
+```
+
+```{r}
+#Correlaciones para evaluar si es necesario cambiar de monotonía
+cor(Datamerge[,-1])
+
+```
+Nótese que la data de desempleo se correlaciona negativamente con la variable Poblacion rural.
+
+
+```{r}
+Datamerge$`Poblacion rural`=-1*Datamerge$`Poblacion rural`
+#ahora:
+cor(Datamerge[,-1])
+```
+```{r}
+#cambio de monotonia
+Datamerge$mortality_rate=-1*Datamerge$mortality_rate
+#ahora:
+cor(Datamerge[,-1])
+```
+
+```{r}
+
+Datamerge$incidence_tuberculosis=-1*Datamerge$incidence_tuberculosis
+#ahora:
+cor(Datamerge[,-1])
+```
+
+```{r}
+# Preparando la data
+#Se elimina la columna pais para quedarnos solo con numericas
+dataClus=Datamerge[,-1]
+row.names(dataClus)=Datamerge$country
+
+```
+
+
+```{r}
+#Distancia entre casos (paises)
+library(cluster)
+g.dist = daisy(dataClus, metric="gower")
+```
+
+
+# Partición
+```{r}
+#Proponer cantidad de clusters
+## para PAM
+
+library(factoextra)
+fviz_nbclust(dataClus, pam,diss=g.dist,method = "gap_stat",k.max = 8,verbose = F)
+```
+
+
+```{r}
+## PARA JERARQUICO
+
+fviz_nbclust(dataClus, hcut,diss=g.dist,method = "gap_stat",k.max = 8,verbose = F,hc_func = "agnes")
+```
+
+```{r}
+## PARA JERARQUICO DIANA
+
+fviz_nbclust(dataClus, hcut,diss=g.dist,method = "gap_stat",k.max = 8,verbose = F,hc_func = "diana")
+```
+
+
+# EVALUANDO RESULTADOS
+
+```{r}
+###pam
+set.seed(123)
+grupos=3 # 3 grupos
+res.pam=pam(g.dist,k = grupos,cluster.only = F)
+dataClus$pam=res.pam$cluster
+
+###agnes
+res.agnes<- hcut(g.dist, k =grupos,hc_func='agnes',hc_method = "ward.D")
+dataClus$agnes=res.agnes$cluster
+
+### diana
+res.diana <- hcut(g.dist, k = grupos,hc_func='diana')
+dataClus$diana=res.diana$cluster
+```
+
+
+#Determinar el mejor 
+```{r}
+fviz_silhouette(res.pam)
+```
+
+```{r}
+fviz_silhouette(res.agnes)
+```
+
+```{r}
+fviz_silhouette(res.diana)
+```
+
+
+```{r}
+# Resultados mal clusterizados
+library(magrittr)
+
+```
+
+```{r}
+silPAM=data.frame(res.pam$silinfo$widths)
+silPAM$country=row.names(silPAM)
+poorPAM=silPAM[silPAM$sil_width<0,'country']%>%sort()
+
+silAGNES=data.frame(res.agnes$silinfo$widths)
+silAGNES$country=row.names(silAGNES)
+poorAGNES=silAGNES[silAGNES$sil_width<0,'country']%>%sort()
+
+silDIANA=data.frame(res.diana$silinfo$widths)
+silDIANA$country=row.names(silDIANA)
+poorDIANA=silDIANA[silDIANA$sil_width<0,'country']%>%sort()
+
+###
+#install.packages('qpcR')
+library("qpcR") 
+mal_Clus=as.data.frame(qpcR:::cbind.na(poorPAM, poorAGNES,poorDIANA))
+mal_Clus
+```
+
+
+```{r}
+# Teoría de conjuntos para ver qué los casos mal clusterizados en todos las técnicas:
+intersect(poorPAM,poorAGNES)
+
+```
+
+```{r}
+#Tecnica PAM
+original=aggregate(.~ pam, data=dataClus,mean)
+original[order(original$Desempleo),]
+```
+
+```{r}
+library(ggplot2)
+proyeccion = cmdscale(g.dist, k=3,add = T) # k es la cantidad de dimensiones
+dataClus$dim1 <- proyeccion$points[,1]
+dataClus$dim2 <- proyeccion$points[,2]
+base= ggplot(dataClus,aes(x=dim1, y=dim2,label=row.names(dataClus))) 
+base + geom_text(size=2, aes(color=as.factor(pam)))  + labs(title = "PAM") 
+```
+
+
+```{r}
+set.seed(123)
+pam.resultado=pam(g.dist,3,cluster.only = F)
+
+#nueva columna
+dataClus$pam=pam.resultado$cluster
+```
+
+```{r}
+#resultados
+aggregate(.~ pam, data=dataClus,mean)
+
+```
+
+```{r}
+#Recodificar
+original=aggregate(.~ pam, data=dataClus,mean)
+original[order(original$Desempleo),]
+```
+
+
+# Estrategia Jerárquica
+--> Metodo Aglomerativo 
+```{r}
+# metodo jerarquico--> algoritmo AGNES
+set.seed(123)
+library(factoextra)
+
+res.agnes<- hcut(g.dist, k = 3,hc_func='agnes',hc_method = "ward.D")
+
+dataClus$agnes=res.agnes$cluster
+```
+
+```{r}
+aggregate(.~ agnes, data=dataClus,mean)
+
+```
+
+```{r}
+#Visualizar
+fviz_dend(res.agnes, cex = 0.7, horiz = T)
+```
+```{r}
+#Comparando
+table(dataClus$pam,dataClus$agnes,dnn = c('Particion','Aglomeracion'))
+
+```
+
+# Estrategia Divisiva (ESTRATEGIA ESCOGIDA EN EL ANÁLISIS)
+
+```{r}
+set.seed(123)
+res.diana <- hcut(g.dist, k = 3,hc_func='diana')
+dataClus$diana=res.diana$cluster
+```
+
+```{r}
+aggregate(.~ diana, data=dataClus,mean)
+```
+
+```{r}
+fviz_dend(res.diana, cex = 0.7, horiz = T)
+```
+
+```{r}
+#Comparando
+table(dataClus$diana,dataClus$agnes,dnn = c('Division','Aglomeracion'))
+
+```
+
+
+## ESTRATEGIA BASADA EN DENSIDAD
+
+La estrategia basada en densidad sigue una estrategia muy sencilla: juntar a los casos cuya cercanía entre sí los diferencia de otros.
+
+```{r}
+proyeccion = cmdscale(g.dist, k=3,add = T) # k es la cantidad de dimensiones
+
+```
+
+```{r}
+dataClus$dim1 <- proyeccion$points[,1]
+dataClus$dim2 <- proyeccion$points[,2]
+```
+
+```{r}
+base= ggplot(dataClus,aes(x=dim1, y=dim2,label=row.names(dataClus))) 
+base + geom_text(size=3)
+```
+
+* PAM
+```{r}
+base= ggplot(dataClus,aes(x=dim1, y=dim2)) +  coord_fixed()
+base + geom_point(size=3, aes(color=as.factor(pam)))  + labs(title = "PAM") 
+```
+
+* AGNES
+```{r}
+base + geom_point(size=3, aes(color=as.factor(agnes))) + labs(title = "AGNES")
+
+```
+
+* DIANA
+```{r}
+base + geom_point(size=3, aes(color=as.factor(diana))) + labs(title = "DIANA")
+
+```
+
+
+```{r}
+#Nuevas distancias: Las posiciones son la información para dbscan.
+
+library(cluster)
+g.dist = daisy(dataClus, metric="gower")
+g.dist.cmd = daisy(dataClus[,c('dim1','dim2')], metric = 'euclidean')
+```
+
+```{r}
+library(dbscan)
+kNNdistplot(g.dist.cmd, k=3)
+```
+
+```{r}
+#Obteniendo clusters
+#install.packages('fpc')
+library(fpc)
+db.cmd = fpc::dbscan(g.dist.cmd, eps=0.30, MinPts=7,method = 'dist')
+```
+
+
+```{r}
+db.cmd
+```
+
+```{r}
+dataClus$db=as.factor(db.cmd$cluster)
+
+```
+
+```{r}
+library(ggrepel)
+base= ggplot(dataClus[dataClus$db!=0,],aes(x=dim1, y=dim2)) + coord_fixed()
+
+dbplot= base + geom_point(aes(color=db)) 
+
+dbplot + geom_point(data=dataClus[dataClus$db==0,],
+                    shape=0) 
+
+```
+
+
+
+# Anexo Proceso del Analisis Factorial Exploratorio (EFA)
+
+```{r}
+Datamerge[,-1]=lapply(Datamerge[,-1],as.numeric)
+
+# sin perdidos:
+Datamerge=na.omit(Datamerge)
+```
+
+```{r}
+dontselect=c("country")
+select=setdiff(names(Datamerge),dontselect) 
+theData=Datamerge[,select] # sin los Scores ni nombre de país.
+
+
+# esta es:
+#install.packages('polycor')
+library(polycor)
+corMatrix=polycor::hetcor(theData)$correlations
+```
+
+```{r}
+#install.packages('ggcorrplot')
+library(ggcorrplot)
+
+ggcorrplot(corMatrix)
+```
+
+
+# Hay bloques correlacionados, hay esperanza
+
+```{r}
+#Verificar si datos permiten factorizar
+library(psych)
+psych::KMO(corMatrix) 
+```
+--> KMO debería pasar de  0.6
+- VALORES PREOCUPANTES:
+Handwashing / Pobreza / Mortality rate /desempleo
+
+
+Aplicando las dos pruebas:
+
+--> Matriz identidad
+
+```{r}
+cortest.bartlett(corMatrix,n=nrow(theData))$p.value>0.05
+```
+INTERPRETACIÓN: Si tenemos una matriz de identidad 
+
+--> Matriz singular
+```{r}
+library(matrixcalc)
+
+is.singular.matrix(corMatrix)
+```
+INTERPRETACIÓN: No tenemos una matriz singular
+
+
+
+```{r}
+#Determinar en cuantos factores o variables latentes podríamos redimensionar la data:
+fa.parallel(theData,fm = 'ML', fa = 'fa',correct = T)
+
+```
+# Parallel analysis suggests that the number of factors =  2  and the number of components =  NA
+
+# ANALISIS FACTORIAL CONFIRMATORIO
+
+```{r}
+model <- ' desempleo  =~ Electricidad + Poblacion Rural + Pobreza + handwashing + mortality_rate + indicende_tuberculosis'
+```
+
+```{r}
+# normalizar las variables:
+#install.packages('lavaan')
+theDataNorm=as.data.frame(scale(theData))
+library(lavaan)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
